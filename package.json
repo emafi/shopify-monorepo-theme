@@ -1,0 +1,22 @@
+{
+  "name": "rica-theme-monorepo",
+  "version": "1.0.0",
+  "description": "Monorepo for RICA Haircare and Rica WAX Shopify themes",
+  "scripts": {
+    "setup": "node setup.js",
+    "build": "node build.js",
+    "build:rica-haircare": "node build.js rica-haircare",
+    "build:rica-wax": "node build.js rica-wax",
+    "dev:rica-haircare": "npm run build:rica-haircare && cd dist/rica-haircare && shopify theme dev",
+    "dev:rica-wax": "npm run build:rica-wax && cd dist/rica-wax && shopify theme dev",
+    "push:rica-haircare": "npm run build:rica-haircare && cd dist/rica-haircare && shopify theme push",
+    "push:rica-wax": "npm run build:rica-wax && cd dist/rica-wax && shopify theme push"
+  },
+  "keywords": [
+    "shopify",
+    "theme",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "ISC"
+}
