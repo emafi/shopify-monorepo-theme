@@ -24,7 +24,7 @@ jobs:
       - name: Deploy Rica Haircare
         run: |
           git subtree split --prefix stores/rica-haircare -b temp-haircare
-          git push -f origin temp-haircare:deploy-rica
+          git push -f origin temp-haircare:deploy-haircare
           git branch -D temp-haircare
 
       # --- STORE 2: Second Store ---
