@@ -1,0 +1,33 @@
+name: Deploy Multi-Store Themes
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # --- STORE 1: Rica Haircare ---
+      - name: Deploy Rica Haircare
+        run: |
+          git subtree split --prefix stores/rica-haircare -b temp-haircare
+          git push -f origin temp-haircare:deploy-rica
+          git branch -D temp-haircare
+
+      # --- STORE 2: Second Store ---
+      - name: Deploy Rica Wax
+        run: |
+          git subtree split --prefix stores/rica-wax -b temp-wax
+          git push -f origin temp-wax:deploy-wax
+          git branch -D temp-wax
