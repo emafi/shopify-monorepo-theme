@@ -23,13 +23,13 @@ jobs:
       # --- STORE 1: Rica Haircare ---
       - name: Deploy Rica Haircare
         run: |
-          git subtree split --prefix stores/rica-haircare -b temp-haircare
+          git subtree split --prefix dist/rica-haircare -b temp-haircare
           git push -f origin temp-haircare:deploy-haircare
           git branch -D temp-haircare
 
       # --- STORE 2: Second Store ---
       - name: Deploy Rica Wax
         run: |
-          git subtree split --prefix stores/rica-wax -b temp-wax
+          git subtree split --prefix dist/rica-wax -b temp-wax
           git push -f origin temp-wax:deploy-wax
           git branch -D temp-wax
