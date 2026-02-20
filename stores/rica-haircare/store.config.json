@@ -1,0 +1,6 @@
+{
+  "id": "rica-haircare",
+  "deployBranch": "deploy-haircare",
+  "shopifyStore": "ema-dev-rica-haircare.myshopify.com",
+  "themeName": "RICA Haircare Theme"
+}

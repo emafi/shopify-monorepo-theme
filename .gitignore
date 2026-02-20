@@ -1,4 +1,6 @@
 # Build outputs
+dist/
+dist-tools/
 node_modules/
 
 # OS files
