@@ -1,0 +1,88 @@
+{% schema %}
+  {
+    "name": "Custom block",
+    "tag": "section",
+    "class": "section custom-block",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Custom block title"
+      }, {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Primary image"
+      }, {
+        "type": "image_picker",
+        "id": "secondary_image",
+        "label": "Secondary image"
+      }, {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background color",
+        "default": "#ffffff"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Custom block",
+        "category": "Custom"
+      }
+    ]
+  }
+{% endschema %}
+
+<section class="custom-block-section" style="background-color: {{ section.settings.background_color }};">
+  <div class="page-width custom-block__inner">
+    {% if section.settings.title != blank %}
+      <h2 class="custom-block__title">
+        {{ section.settings.title }}
+      </h2>
+    {% endif %}
+
+    <div class="custom-block__images">
+      {% if section.settings.image != blank %}
+        <div class="custom-block__image custom-block__image--primary">
+          {{ section.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: section.settings.title }}
+        </div>
+      {% endif %}
+
+      {% if section.settings.secondary_image != blank %}
+        <div class="custom-block__image custom-block__image--secondary">
+          {{ section.settings.secondary_image | image_url: width: 800 | image_tag: loading: 'lazy', alt: section.settings.title }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .custom-block-section {
+    padding: 40px 0;
+  }
+
+  .custom-block__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .custom-block__title {
+    margin: 0;
+    text-align: center;
+  }
+
+  .custom-block__images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .custom-block__image img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+{% endstylesheet %}
