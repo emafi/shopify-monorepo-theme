@@ -1,44 +1,7 @@
 {% comment %}
   Sezione: custom-faq-accordion.liquid
-
-  Scopo:
-  - Mostrare un elenco di FAQ in formato accordion accessibile usando i tag nativi HTML <details> e <summary>.
-  - Fornire automaticamente i dati strutturati in formato JSON-LD (FAQPage) per i rich snippets di Google.
-
-  Struttura dati / JSON-LD:
-  - Ogni blocco di tipo "faq" viene trasformato in un oggetto Question/Answer nello schema FAQPage.
-  - Il JSON-LD è emesso in uno <script type="application/ld+json"> e contiene:
-  {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-  {
-  "@type": "Question",
-  "name": "Testo della domanda (block.settings.question)",
-  "acceptedAnswer": {
-  "@type": "Answer",
-  "text": "Risposta in testo semplice (block.settings.answer senza HTML)"
-  }
-  },
-  ...
-  ]
-  }
-  - Google legge questo script per generare i rich results FAQ quando compatibile con le linee guida.
-
-  Parametri principali (section.settings):
-  - heading: titolo principale della sezione FAQ.
-  - intro_text: testo introduttivo (richtext) sopra l'accordion.
-  - border_color: colore del bordo degli elementi FAQ.
-  - text_color: colore del testo di domande e risposte.
-  - color_scheme: schema colore di base del tema (background/foreground).
-
-  Parametri principali (block.settings per tipo "faq"):
-  - question: testo della domanda.
-  - answer: testo della risposta (richtext).
-
-  Dipendenze:
-  - Nessuna dipendenza da snippet o librerie esterne.
-  - Usa solamente HTML semantico, CSS e JSON-LD inline.
+  - Risolto errore "Validation failed: default non può essere vuoto"
+  - Corretto loop JSON-LD per i dati strutturati
 {% endcomment %}
 
 <style>
@@ -159,18 +122,9 @@
   }
 </style>
 
-{%- liquid
-  assign border_color_setting = section.settings.border_color
-  assign text_color_setting = section.settings.text_color
--%}
-
 <section class="custom-faq-accordion color-{{ section.settings.color_scheme }} gradient" style="
-    {% if border_color_setting != blank %}
-      --faq-border-color: {{ border_color_setting }};
-    {% endif %}
-    {% if text_color_setting != blank %}
-      --faq-text-color: {{ text_color_setting }};
-    {% endif %}
+    --faq-border-color: {{ section.settings.border_color }};
+    --faq-text-color: {{ section.settings.text_color }};
   ">
   <div class="page-width">
     <div class="custom-faq-accordion__inner">
@@ -208,35 +162,26 @@
     </div>
   </div>
 
-  {%- comment -%}
-    JSON-LD FAQPage per rich snippets Google.
-    Vengono inclusi solo i blocchi con question e answer non vuoti.
-  {%- endcomment -%}
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": [
-        {%- liquid
-          assign first = true
-          for block in section.blocks
-            if block.type == 'faq' and block.settings.question != blank and block.settings.answer != blank
-              unless first
-                echo ','
-              endunless
-              assign first = false
-              endif
-            endfor -%}
-        {
-          "@type": "Question",
-          "name": {{ block.settings.question | strip_html | strip_newlines | json }},
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": {{ block.settings.answer | strip_html | strip_newlines | json }}
-          }
+      "mainEntity": [{%- assign first = true -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'faq' and block.settings.question != blank and block.settings.answer != blank -%}
+            {%- unless first -%},{%- endunless -%}
+            {
+              "@type": "Question",
+              "name": {{ block.settings.question | strip_html | strip_newlines | json }},
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ block.settings.answer | strip_html | strip_newlines | json }}
+              }
+            }
+            {%- assign first = false -%}
+            {%- endif -%}
+            {%- endfor -%}]
         }
-      ]
-    }
   </script>
 </section>
 
@@ -259,7 +204,7 @@
         "type": "richtext",
         "id": "intro_text",
         "label": "Testo introduttivo",
-        "default": "<p>Rispondi alle domande più comuni dei tuoi clienti per ridurre i dubbi in fase di acquisto.<\\/p>"
+        "default": "<p>Rispondi alle domande più comuni dei tuoi clienti per ridurre i dubbi in fase di acquisto.</p>"
       },
       {
         "type": "select",
@@ -283,12 +228,12 @@
         "type": "color",
         "id": "border_color",
         "label": "Colore bordo FAQ",
-        "default": "#000000"
+        "default": "#e0e0e0"
       }, {
         "type": "color",
         "id": "text_color",
         "label": "Colore testo FAQ",
-        "default": "#000000"
+        "default": "#121212"
       }, {
         "type": "select",
         "id": "color_scheme",
@@ -331,7 +276,7 @@
             "type": "richtext",
             "id": "answer",
             "label": "Risposta",
-            "default": "<p>Usa questo campo per rispondere in modo chiaro e sintetico, eventualmente con link o formattazione di base.<\\/p>"
+            "default": "<p>Usa questo campo per rispondere in modo chiaro e sintetico.</p>"
           }
         ]
       }
