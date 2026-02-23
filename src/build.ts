@@ -73,4 +73,3 @@ storesToBuild.forEach((store) => {
 });
 
 console.log('🎉 Build complete! Themes are ready in dist/ directory.');
-

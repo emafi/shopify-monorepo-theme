@@ -1,6 +1,6 @@
 {
   "id": "rica-wax",
   "deployBranch": "deploy-wax",
-  "shopifyStore": "ema-dev-rica-wax.myshopify.com/",
+  "shopifyStore": "ema-dev-rica-wax.myshopify.com",
   "themeName": "Rica WAX Theme"
 }

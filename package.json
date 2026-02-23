@@ -8,11 +8,13 @@
     "build": "npm run build:ts && node dist-tools/build.js",
     "build:rica-haircare": "npm run build:ts && node dist-tools/build.js rica-haircare",
     "build:rica-wax": "npm run build:ts && node dist-tools/build.js rica-wax",
-    "dev:rica-haircare": "npm run build:rica-haircare && cd dist/rica-haircare && shopify theme dev",
-    "dev:rica-wax": "npm run build:rica-wax && cd dist/rica-wax && shopify theme dev",
     "push:rica-haircare": "npm run build:rica-haircare && cd dist/rica-haircare && shopify theme push",
     "push:rica-wax": "npm run build:rica-wax && cd dist/rica-wax && shopify theme push",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" \"*.js\"",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js}\" \"stores/**/*.json\" \"package.json\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js}\" \"stores/**/*.json\" \"package.json\""
   },
   "keywords": [
     "shopify",
@@ -23,6 +25,12 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.56.0",
+    "@typescript-eslint/parser": "^8.56.0",
+    "eslint": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
     "typescript": "^5.3.3"
   }
 }

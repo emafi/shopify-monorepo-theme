@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-tools/
+theme/assets/
+theme/layout/
+theme/locales/
+theme/sections/
+theme/snippets/
+theme/templates/
+

@@ -1,0 +1,574 @@
+/* ============================================
+   BEAUTY THEME ENHANCEMENTS
+   Elegant & Cute Design for Beauty Products
+   ============================================ */
+
+/* Enhanced Color Variables for Beauty Theme */
+:root {
+  --beauty-shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --beauty-shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --beauty-shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.15);
+  --beauty-transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --beauty-transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --beauty-border-radius-soft: 16px;
+  --beauty-border-radius-medium: 20px;
+  --beauty-border-radius-large: 24px;
+}
+
+/* ============================================
+   PRODUCT CARDS - Elegant & Cute
+   ============================================ */
+
+.product-card-wrapper,
+.card-wrapper {
+  transition: var(--beauty-transition-smooth);
+  position: relative;
+}
+
+.product-card-wrapper:hover,
+.card-wrapper:hover {
+  transform: translateY(-8px);
+}
+
+.card--card,
+.card--standard .card__inner {
+  border-radius: var(--beauty-border-radius-medium);
+  overflow: hidden;
+  transition: var(--beauty-transition-smooth);
+  border: 1px solid rgba(var(--color-foreground), 0.08);
+  background: rgba(var(--color-background), 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.card--card:hover,
+.card--standard .card__inner:hover {
+  box-shadow: var(--beauty-shadow-medium);
+  border-color: rgba(var(--color-foreground), 0.12);
+  transform: translateY(-4px);
+}
+
+.card--card:after,
+.card--standard .card__inner:after {
+  box-shadow: var(--beauty-shadow-soft);
+  transition: var(--beauty-transition-smooth);
+}
+
+.card--card:hover:after,
+.card--standard .card__inner:hover:after {
+  box-shadow: var(--beauty-shadow-medium);
+}
+
+/* Product Card Media - Elegant Image Hover */
+.card__media,
+.card .media {
+  border-radius: var(--beauty-border-radius-soft);
+  overflow: hidden;
+  position: relative;
+}
+
+.card__media::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+  opacity: 0;
+  transition: var(--beauty-transition-smooth);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-wrapper:hover .card__media::before {
+  opacity: 1;
+}
+
+.card__media img,
+.card .media img {
+  transition: var(--beauty-transition-smooth);
+  filter: brightness(1);
+}
+
+.card-wrapper:hover .card__media img,
+.card-wrapper:hover .card .media img {
+  transform: scale(1.05);
+  filter: brightness(1.02);
+}
+
+/* Product Card Information - Refined Typography */
+.card__information {
+  padding: 1.8rem 1.5rem;
+  background: linear-gradient(to bottom, transparent 0%, rgba(var(--color-background), 0.98) 100%);
+}
+
+.card__heading {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-bottom: 0.6rem;
+  transition: var(--beauty-transition-smooth);
+}
+
+.card-wrapper:hover .card__heading {
+  color: rgba(var(--color-foreground), 0.9);
+}
+
+.card__heading a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--beauty-transition-smooth);
+}
+
+.card__heading a:hover {
+  color: rgba(var(--color-base-accent-1), 0.9);
+}
+
+/* Price Styling - Elegant */
+.card-information > .price {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(var(--color-foreground), 0.85);
+  margin-top: 0.4rem;
+}
+
+.price--on-sale .price-item--regular {
+  color: rgba(var(--color-foreground), 0.5);
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+.price--on-sale .price-item--sale {
+  color: rgba(var(--color-base-accent-2), 0.9);
+}
+
+/* Badge Styling - Cute & Elegant */
+.card__badge {
+  background: linear-gradient(135deg, rgba(var(--color-base-accent-2), 0.95) 0%, rgba(var(--color-base-accent-1), 0.95) 100%);
+  color: rgb(var(--color-base-solid-button-labels));
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: var(--beauty-shadow-soft);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  transition: var(--beauty-transition-smooth);
+}
+
+.card__badge:hover {
+  transform: scale(1.05);
+  box-shadow: var(--beauty-shadow-medium);
+}
+
+/* ============================================
+   BUTTONS - Refined & Elegant
+   ============================================ */
+
+.button,
+.shopify-challenge__button,
+.customer button {
+  border-radius: 50px;
+  padding: 1.4rem 3.5rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 1.4rem;
+  transition: var(--beauty-transition-smooth);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, rgba(var(--color-button), 1) 0%, rgba(var(--color-button), 0.95) 100%);
+  box-shadow: var(--beauty-shadow-soft);
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--beauty-shadow-medium);
+  border-color: rgba(var(--color-button-text), 0.2);
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: var(--beauty-shadow-soft);
+}
+
+.button--secondary {
+  background: transparent;
+  border: 2px solid rgba(var(--color-button), 0.3);
+  color: rgb(var(--color-button));
+  box-shadow: none;
+}
+
+.button--secondary:hover {
+  background: rgba(var(--color-button), 0.05);
+  border-color: rgba(var(--color-button), 0.5);
+  box-shadow: var(--beauty-shadow-soft);
+}
+
+.button--tertiary {
+  background: transparent;
+  border: none;
+  color: rgb(var(--color-button));
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+  text-decoration-thickness: 1.5px;
+  padding: 1rem 2rem;
+}
+
+.button--tertiary:hover {
+  text-decoration-thickness: 2px;
+  transform: translateX(4px);
+}
+
+/* ============================================
+   TYPOGRAPHY - Elegant & Refined
+   ============================================ */
+
+h1, .h1,
+h2, .h2,
+h3, .h3 {
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+h1, .h1 {
+  background: linear-gradient(135deg, rgba(var(--color-foreground), 1) 0%, rgba(var(--color-foreground), 0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-body {
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  color: rgba(var(--color-foreground), 0.8);
+}
+
+/* ============================================
+   FORMS - Elegant Input Fields
+   ============================================ */
+
+.field__input,
+.select__select,
+.customer .field input,
+.customer .field select,
+.customer .field textarea {
+  border-radius: 12px;
+  border: 2px solid rgba(var(--color-foreground), 0.1);
+  padding: 1.4rem 1.8rem;
+  font-size: 1.5rem;
+  transition: var(--beauty-transition-smooth);
+  background: rgba(var(--color-background), 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.field__input:focus,
+.select__select:focus,
+.customer .field input:focus,
+.customer .field select:focus,
+.customer .field textarea:focus {
+  border-color: rgba(var(--color-base-accent-1), 0.5);
+  box-shadow: 0 0 0 4px rgba(var(--color-base-accent-1), 0.1);
+  outline: none;
+  background: rgba(var(--color-background), 1);
+}
+
+.field__input:hover,
+.select__select:hover {
+  border-color: rgba(var(--color-foreground), 0.2);
+}
+
+.field__label {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(var(--color-foreground), 0.7);
+  margin-bottom: 0.8rem;
+}
+
+/* ============================================
+   HEADER & NAVIGATION - Refined
+   ============================================ */
+
+.header {
+  backdrop-filter: blur(20px);
+  background: rgba(var(--color-background), 0.95);
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.08);
+  transition: var(--beauty-transition-smooth);
+}
+
+.header__heading-logo {
+  transition: var(--beauty-transition-smooth);
+}
+
+.header__heading-logo:hover {
+  transform: scale(1.05);
+}
+
+.header__menu-item {
+  position: relative;
+  padding: 0.8rem 1.2rem;
+  transition: var(--beauty-transition-smooth);
+  border-radius: 8px;
+}
+
+.header__menu-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(var(--color-base-accent-1), 1), rgba(var(--color-base-accent-2), 1));
+  transform: translateX(-50%);
+  transition: var(--beauty-transition-smooth);
+  border-radius: 2px;
+}
+
+.header__menu-item:hover::after {
+  width: 80%;
+}
+
+.header__menu-item:hover {
+  background: rgba(var(--color-foreground), 0.03);
+}
+
+/* ============================================
+   PRODUCT PAGE - Enhanced
+   ============================================ */
+
+.product__media-wrapper {
+  border-radius: var(--beauty-border-radius-large);
+  overflow: hidden;
+  box-shadow: var(--beauty-shadow-medium);
+}
+
+.product__media img {
+  transition: var(--beauty-transition-smooth);
+}
+
+.product__media:hover img {
+  transform: scale(1.02);
+}
+
+.product__title {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+
+.product__text {
+  line-height: 1.8;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+/* Variant Picker - Cute & Elegant */
+.product-form__input input[type="radio"]:checked + label {
+  background: linear-gradient(135deg, rgba(var(--color-base-accent-1), 0.1), rgba(var(--color-base-accent-2), 0.1));
+  border: 2px solid rgba(var(--color-base-accent-1), 0.5);
+  box-shadow: 0 0 0 3px rgba(var(--color-base-accent-1), 0.1);
+  transform: scale(1.05);
+}
+
+.product-form__input label {
+  border-radius: 10px;
+  transition: var(--beauty-transition-smooth);
+  border: 2px solid rgba(var(--color-foreground), 0.1);
+}
+
+.product-form__input label:hover {
+  border-color: rgba(var(--color-base-accent-1), 0.3);
+  transform: translateY(-2px);
+  box-shadow: var(--beauty-shadow-soft);
+}
+
+/* ============================================
+   CART DRAWER - Elegant
+   ============================================ */
+
+.cart-drawer {
+  backdrop-filter: blur(20px);
+  background: rgba(var(--color-background), 0.98);
+}
+
+.cart-item {
+  border-radius: var(--beauty-border-radius-soft);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  background: rgba(var(--color-background), 0.5);
+  border: 1px solid rgba(var(--color-foreground), 0.08);
+  transition: var(--beauty-transition-smooth);
+}
+
+.cart-item:hover {
+  background: rgba(var(--color-background), 0.8);
+  box-shadow: var(--beauty-shadow-soft);
+  transform: translateX(4px);
+}
+
+/* ============================================
+   COLLECTIONS - Enhanced Grid
+   ============================================ */
+
+.collection {
+  border-radius: var(--beauty-border-radius-medium);
+  overflow: hidden;
+  transition: var(--beauty-transition-smooth);
+}
+
+.collection:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--beauty-shadow-medium);
+}
+
+/* ============================================
+   BANNERS & HERO SECTIONS
+   ============================================ */
+
+.banner__content {
+  backdrop-filter: blur(10px);
+  background: rgba(var(--color-background), 0.85);
+  border-radius: var(--beauty-border-radius-medium);
+  padding: 3rem;
+}
+
+.banner__heading {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   ANIMATIONS - Smooth & Elegant
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.card-wrapper,
+.product-card-wrapper {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* ============================================
+   SCROLLBAR - Elegant Styling
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(var(--color-background), 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(var(--color-base-accent-1), 0.5), rgba(var(--color-base-accent-2), 0.5));
+  border-radius: 10px;
+  border: 2px solid rgba(var(--color-background), 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, rgba(var(--color-base-accent-1), 0.7), rgba(var(--color-base-accent-2), 0.7));
+}
+
+/* ============================================
+   LOADING STATES - Elegant
+   ============================================ */
+
+.loading-overlay__spinner {
+  border-radius: 50%;
+  border: 3px solid rgba(var(--color-base-accent-1), 0.2);
+  border-top-color: rgba(var(--color-base-accent-1), 1);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   RESPONSIVE ENHANCEMENTS
+   ============================================ */
+
+@media screen and (max-width: 749px) {
+  .card--card,
+  .card--standard .card__inner {
+    border-radius: var(--beauty-border-radius-soft);
+  }
+  
+  .button {
+    padding: 1.2rem 2.5rem;
+    font-size: 1.3rem;
+  }
+  
+  .card__information {
+    padding: 1.5rem 1.2rem;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus states for accessibility */
+*:focus-visible {
+  outline: 2px solid rgba(var(--color-base-accent-1), 0.6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

@@ -114,4 +114,3 @@ console.log('\nNext steps:');
 console.log('1. Review and customize store-specific templates in stores/{store-name}/templates/');
 console.log('2. Review and customize settings_data.json in stores/{store-name}/config/');
 console.log('3. Run "npm run build" to build themes for deployment');
-

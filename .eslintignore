@@ -1,0 +1,6 @@
+dist/
+dist-tools/
+node_modules/
+theme/
+stores/*/templates/
+
