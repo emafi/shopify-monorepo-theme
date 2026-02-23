@@ -1,0 +1,375 @@
+{% comment %}
+  Sezione: custom-faq-accordion.liquid
+
+  Scopo:
+  - Mostrare un elenco di FAQ in formato accordion accessibile usando i tag nativi HTML <details> e <summary>.
+  - Fornire automaticamente i dati strutturati in formato JSON-LD (FAQPage) per i rich snippets di Google.
+
+  Struttura dati / JSON-LD:
+  - Ogni blocco di tipo "faq" viene trasformato in un oggetto Question/Answer nello schema FAQPage.
+  - Il JSON-LD è emesso in uno <script type="application/ld+json"> e contiene:
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Testo della domanda (block.settings.question)",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Risposta in testo semplice (block.settings.answer senza HTML)"
+          }
+        },
+        ...
+      ]
+    }
+  - Google legge questo script per generare i rich results FAQ quando compatibile con le linee guida.
+
+  Parametri principali (section.settings):
+  - heading: titolo principale della sezione FAQ.
+  - intro_text: testo introduttivo (richtext) sopra l'accordion.
+  - border_color: colore del bordo degli elementi FAQ.
+  - text_color: colore del testo di domande e risposte.
+  - color_scheme: schema colore di base del tema (background/foreground).
+
+  Parametri principali (block.settings per tipo "faq"):
+  - question: testo della domanda.
+  - answer: testo della risposta (richtext).
+
+  Dipendenze:
+  - Nessuna dipendenza da snippet o librerie esterne.
+  - Usa solamente HTML semantico, CSS e JSON-LD inline.
+{% endcomment %}
+
+<style>
+  .custom-faq-accordion {
+    --faq-border-color: rgba(var(--color-foreground), 0.12);
+    --faq-text-color: rgb(var(--color-foreground));
+  }
+
+  .custom-faq-accordion__inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding-block: 3.2rem;
+  }
+
+  .custom-faq-accordion__heading {
+    margin-bottom: 1.2rem;
+  }
+
+  .custom-faq-accordion__intro {
+    margin-bottom: 2.4rem;
+  }
+
+  .custom-faq-accordion__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .custom-faq-accordion__item {
+    border-radius: 12px;
+    border: 1px solid var(--faq-border-color);
+    background-color: rgba(var(--color-background), 1);
+    transition:
+      border-color 0.18s ease-out,
+      box-shadow 0.18s ease-out,
+      background-color 0.18s ease-out;
+    overflow: hidden;
+  }
+
+  .custom-faq-accordion__item[open] {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  }
+
+  .custom-faq-accordion__summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding: 1.4rem 1.6rem;
+    color: var(--faq-text-color);
+  }
+
+  .custom-faq-accordion__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .custom-faq-accordion__question {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .custom-faq-accordion__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    border: 1px solid var(--faq-border-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      transform 0.2s ease-out,
+      background-color 0.2s ease-out,
+      border-color 0.2s ease-out;
+  }
+
+  .custom-faq-accordion__icon::before,
+  .custom-faq-accordion__icon::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 2px;
+    border-radius: 999px;
+    background-color: var(--faq-text-color);
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  }
+
+  .custom-faq-accordion__icon::after {
+    transform: rotate(90deg);
+  }
+
+  .custom-faq-accordion__item[open] .custom-faq-accordion__icon {
+    background-color: rgba(var(--color-foreground), 0.04);
+    transform: rotate(180deg);
+  }
+
+  .custom-faq-accordion__item[open] .custom-faq-accordion__icon::after {
+    transform: rotate(90deg) scaleX(0);
+    opacity: 0;
+  }
+
+  .custom-faq-accordion__content {
+    padding: 0 1.6rem 1.6rem;
+    color: var(--faq-text-color);
+  }
+
+  .custom-faq-accordion__content .rte {
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .custom-faq-accordion__inner {
+      padding-block: 4rem;
+    }
+  }
+</style>
+
+{%- liquid
+  assign border_color_setting = section.settings.border_color
+  assign text_color_setting = section.settings.text_color
+-%}
+
+<section
+  class="custom-faq-accordion color-{{ section.settings.color_scheme }} gradient"
+  style="
+    {% if border_color_setting != blank %}
+      --faq-border-color: {{ border_color_setting }};
+    {% endif %}
+    {% if text_color_setting != blank %}
+      --faq-text-color: {{ text_color_setting }};
+    {% endif %}
+  "
+>
+  <div class="page-width">
+    <div class="custom-faq-accordion__inner">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="custom-faq-accordion__heading {{ section.settings.heading_size }}">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.intro_text != blank -%}
+        <div class="custom-faq-accordion__intro rte">
+          {{ section.settings.intro_text }}
+        </div>
+      {%- endif -%}
+
+      <div class="custom-faq-accordion__list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'faq' and block.settings.question != blank and block.settings.answer != blank -%}
+            <details
+              class="custom-faq-accordion__item"
+              {{ block.shopify_attributes }}
+            >
+              <summary class="custom-faq-accordion__summary">
+                <p class="custom-faq-accordion__question">
+                  {{ block.settings.question | escape }}
+                </p>
+                <span
+                  class="custom-faq-accordion__icon"
+                  aria-hidden="true"
+                ></span>
+              </summary>
+              <div class="custom-faq-accordion__content">
+                <div class="rte">
+                  {{ block.settings.answer }}
+                </div>
+              </div>
+            </details>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%}
+    JSON-LD FAQPage per rich snippets Google.
+    Vengono inclusi solo i blocchi con question e answer non vuoti.
+  {%- endcomment -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- liquid
+          assign first = true
+          for block in section.blocks
+            if block.type == 'faq' and block.settings.question != blank and block.settings.answer != blank
+              unless first
+                echo ','
+              endunless
+              assign first = false
+        -%}
+        {
+          "@type": "Question",
+          "name": {{ block.settings.question | strip_html | strip_newlines | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ block.settings.answer | strip_html | strip_newlines | json }}
+          }
+        }
+        {%- endif
+          endfor
+        -%}
+      ]
+    }
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Custom - FAQ accordion",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titolo",
+      "default": "Domande frequenti"
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "label": "Testo introduttivo",
+      "default": "<p>Rispondi alle domande più comuni dei tuoi clienti per ridurre i dubbi in fase di acquisto.<\\/p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Dimensione titolo",
+      "default": "h2",
+      "options": [
+        {
+          "value": "h3",
+          "label": "Piccolo"
+        },
+        {
+          "value": "h2",
+          "label": "Medio"
+        },
+        {
+          "value": "h1",
+          "label": "Grande"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Colore bordo FAQ",
+      "default": ""
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo FAQ",
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Schema colore di base",
+      "default": "background-1",
+      "options": [
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "accent-2",
+          "label": "Accent 2"
+        },
+        {
+          "value": "inverse",
+          "label": "Inverse"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Domanda",
+          "default": "Inserisci qui la domanda del cliente"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Risposta",
+          "default": "<p>Usa questo campo per rispondere in modo chiaro e sintetico, eventualmente con link o formattazione di base.<\\/p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom - FAQ accordion",
+      "blocks": [
+        {
+          "type": "faq"
+        },
+        {
+          "type": "faq"
+        },
+        {
+          "type": "faq"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
