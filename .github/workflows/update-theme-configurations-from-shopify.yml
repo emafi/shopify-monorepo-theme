@@ -5,7 +5,7 @@ on:
       - deploy-haircare
       - deploy-wax
     paths:
-      # These paths match the root of the deploy branches (due to subtree split)
+      # Use root paths because these branches are subtree-split
       - 'config/settings_data.json'
       - 'templates/**'
 
@@ -28,36 +28,36 @@ jobs:
 
       - name: Sync Changes
         run: |
-          # Identify the source branch
+          # Identify which deploy branch triggered the push
           SOURCE_BRANCH=${GITHUB_REF#refs/heads/}
           
-          # Map source branch to the correct destination directory on main
+          # Map the source branch to the nested destination on main
           if [ "$SOURCE_BRANCH" == "deploy-haircare" ]; then
             TARGET_DIR="dist/rica-haircare"
           else
             TARGET_DIR="dist/rica-wax"
           fi
 
-          echo "Syncing files from $SOURCE_BRANCH to $TARGET_DIR on main branch"
+          echo "Syncing from root of $SOURCE_BRANCH to $TARGET_DIR on main"
 
-          # Fetch specific files/folders from the deploy branch origin
-          # Note: In deploy branches, these files are at the root level
+          # 1. Pull the specific files from the deploy branch into the current workspace (main)
+          # These will appear in the root temporarily
           git checkout origin/$SOURCE_BRANCH -- config/settings_data.json
           git checkout origin/$SOURCE_BRANCH -- templates/
 
-          # Move fetched files into the correct subdirectory on main
+          # 2. Move them to their nested destination
           mkdir -p $TARGET_DIR/config
           mv config/settings_data.json $TARGET_DIR/config/settings_data.json
           
-          # Replace the existing templates folder to ensure a clean sync
+          # Clean old templates in main to prevent ghost files, then move new ones
           rm -rf $TARGET_DIR/templates
           mv templates/ $TARGET_DIR/templates
 
-          # Commit and Push if changes are detected
+          # 3. Check for changes and push
           if [ -n "$(git status --porcelain)" ]; then
             git add $TARGET_DIR
-            git commit -m "chore: auto-sync updated $TARGET_DIR from $SOURCE_BRANCH"
+            git commit -m "chore: sync shopify updates from $SOURCE_BRANCH to $TARGET_DIR"
             git push origin main
           else
-            echo "No changes detected to sync."
+            echo "No actual changes detected between branches."
           fi
