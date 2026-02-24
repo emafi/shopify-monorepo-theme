@@ -1,0 +1,63 @@
+name: Sync Templates Back to Main
+on:
+  push:
+    branches:
+      - deploy-haircare
+      - deploy-wax
+    paths:
+      # These paths match the root of the deploy branches (due to subtree split)
+      - 'config/settings_data.json'
+      - 'templates/**'
+
+jobs:
+  back-sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync Changes
+        run: |
+          # Identify the source branch
+          SOURCE_BRANCH=${GITHUB_REF#refs/heads/}
+          
+          # Map source branch to the correct destination directory on main
+          if [ "$SOURCE_BRANCH" == "deploy-haircare" ]; then
+            TARGET_DIR="dist/rica-haircare"
+          else
+            TARGET_DIR="dist/rica-wax"
+          fi
+
+          echo "Syncing files from $SOURCE_BRANCH to $TARGET_DIR on main branch"
+
+          # Fetch specific files/folders from the deploy branch origin
+          # Note: In deploy branches, these files are at the root level
+          git checkout origin/$SOURCE_BRANCH -- config/settings_data.json
+          git checkout origin/$SOURCE_BRANCH -- templates/
+
+          # Move fetched files into the correct subdirectory on main
+          mkdir -p $TARGET_DIR/config
+          mv config/settings_data.json $TARGET_DIR/config/settings_data.json
+          
+          # Replace the existing templates folder to ensure a clean sync
+          rm -rf $TARGET_DIR/templates
+          mv templates/ $TARGET_DIR/templates
+
+          # Commit and Push if changes are detected
+          if [ -n "$(git status --porcelain)" ]; then
+            git add $TARGET_DIR
+            git commit -m "chore: auto-sync updated $TARGET_DIR from $SOURCE_BRANCH"
+            git push origin main
+          else
+            echo "No changes detected to sync."
+          fi
