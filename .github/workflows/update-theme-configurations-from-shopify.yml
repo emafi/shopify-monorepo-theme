@@ -1,13 +1,12 @@
 name: Sync Templates Back to Main
 on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch: 
   push:
     branches:
       - deploy-haircare
       - deploy-wax
-    paths:
-      # Use root paths because these branches are subtree-split
-      - 'config/settings_data.json'
-      - 'templates/**'
 
 jobs:
   back-sync:
@@ -18,46 +17,25 @@ jobs:
       - name: Checkout Main
         uses: actions/checkout@v4
         with:
-          ref: main
-          fetch-depth: 0
+          fetch-depth: 0 # Important for subtree operations
 
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Sync Changes
+      - name: Sync All Stores
         run: |
-          # Identify which deploy branch triggered the push
-          SOURCE_BRANCH=${GITHUB_REF#refs/heads/}
-          
-          # Map the source branch to the nested destination on main
-          if [ "$SOURCE_BRANCH" == "deploy-haircare" ]; then
-            TARGET_DIR="dist/rica-haircare"
-          else
-            TARGET_DIR="dist/rica-wax"
-          fi
+          # 1. Fetch latest from all deploy branches
+          git fetch origin deploy-haircare deploy-wax
 
-          echo "Syncing from root of $SOURCE_BRANCH to $TARGET_DIR on main"
+          # 2. Sync Haircare
+          echo "Syncing Haircare..."
+          git subtree pull --prefix dist/rica-haircare origin deploy-haircare --squash -m "chore: sync live settings [haircare]" || echo "No changes for haircare"
 
-          # 1. Pull the specific files from the deploy branch into the current workspace (main)
-          # These will appear in the root temporarily
-          git checkout origin/$SOURCE_BRANCH -- config/settings_data.json
-          git checkout origin/$SOURCE_BRANCH -- templates/
+          # 3. Sync Wax
+          echo "Syncing Wax..."
+          git subtree pull --prefix dist/rica-wax origin deploy-wax --squash -m "chore: sync live settings [wax]" || echo "No changes for wax"
 
-          # 2. Move them to their nested destination
-          mkdir -p $TARGET_DIR/config
-          mv config/settings_data.json $TARGET_DIR/config/settings_data.json
-          
-          # Clean old templates in main to prevent ghost files, then move new ones
-          rm -rf $TARGET_DIR/templates
-          mv templates/ $TARGET_DIR/templates
-
-          # 3. Check for changes and push
-          if [ -n "$(git status --porcelain)" ]; then
-            git add $TARGET_DIR
-            git commit -m "chore: sync shopify updates from $SOURCE_BRANCH to $TARGET_DIR"
-            git push origin main
-          else
-            echo "No actual changes detected between branches."
-          fi
+          # 4. Push combined changes back to main
+          git push origin main
