@@ -20,16 +20,57 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      # --- STORE 1: Rica Haircare ---
+      # --- PRE-DEPLOY SYNC: Haircare ---
+      # Pull specific content from deploy-haircare branch into main's dist folder
+      - name: Sync Haircare templates and settings
+        run: |
+          # Checkout templates directory and settings file from deploy-haircare branch
+          git checkout origin/deploy-haircare -- templates/
+          git checkout origin/deploy-haircare -- config/settings_data.json
+          
+          # Move the pulled content to the target distribution directory
+          mkdir -p dist/rica-haircare/templates
+          cp -R templates/* dist/rica-haircare/templates/
+          cp config/settings_data.json dist/rica-haircare/config/settings_data.json
+          
+          # Clean up temporary checked-out files from the root to keep the environment clean
+          git reset templates/ config/settings_data.json
+          rm -rf templates/
+
+      # --- PRE-DEPLOY SYNC: Wax ---
+      # Pull specific content from deploy-wax branch into main's dist folder
+      - name: Sync Wax templates and settings
+        run: |
+          # Checkout templates directory and settings file from deploy-wax branch
+          git checkout origin/deploy-wax -- templates/
+          git checkout origin/deploy-wax -- config/settings_data.json
+          
+          # Move the pulled content to the target distribution directory
+          mkdir -p dist/rica-wax/templates
+          cp -R templates/* dist/rica-wax/templates/
+          cp config/settings_data.json dist/rica-wax/config/settings_data.json
+          
+          # Clean up temporary checked-out files
+          git reset templates/ config/settings_data.json
+          rm -rf templates/
+
+      # --- DEPLOYMENT PHASE ---
+      # These steps now run after the files have been synchronized from the other branches
+
       - name: Deploy Rica Haircare
         run: |
+          # Create a temporary branch from the updated dist folder and push it back to deploy-haircare
+          git add dist/rica-haircare
+          git commit -m "chore: update haircare distribution from deploy-haircare source" || echo "No changes to commit"
           git subtree split --prefix dist/rica-haircare -b temp-haircare
           git push -f origin temp-haircare:deploy-haircare
           git branch -D temp-haircare
 
-      # --- STORE 2: Second Store ---
       - name: Deploy Rica Wax
         run: |
+          # Create a temporary branch from the updated dist folder and push it back to deploy-wax
+          git add dist/rica-wax
+          git commit -m "chore: update wax distribution from deploy-wax source" || echo "No changes to commit"
           git subtree split --prefix dist/rica-wax -b temp-wax
           git push -f origin temp-wax:deploy-wax
           git branch -D temp-wax
