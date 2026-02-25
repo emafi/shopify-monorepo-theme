@@ -166,22 +166,20 @@
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": [{%- assign first = true -%}
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'faq' and block.settings.question != blank and block.settings.answer != blank -%}
-            {%- unless first -%},{%- endunless -%}
-            {
-              "@type": "Question",
-              "name": {{ block.settings.question | strip_html | strip_newlines | json }},
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": {{ block.settings.answer | strip_html | strip_newlines | json }}
-              }
+      "mainEntity": [{%- assign first = true -%}{%- for block in section.blocks -%}{%- if block.type == 'faq' and block.settings.question != blank and block.settings.answer != blank -%}
+          {%- unless first -%},{%- endunless -%}
+          {
+            "@type": "Question",
+            "name": {{ block.settings.question | strip_html | strip_newlines | json }},
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": {{ block.settings.answer | strip_html | strip_newlines | json }}
             }
-            {%- assign first = false -%}
-            {%- endif -%}
-            {%- endfor -%}]
-        }
+          }
+          {%- assign first = false -%}
+          {%- endif -%}
+          {%- endfor -%}]
+      }
   </script>
 </section>
 
@@ -270,12 +268,12 @@
           {
             "type": "text",
             "id": "question",
-            "label": "Domanda",
+            "label": "Question",
             "default": "Inserisci qui la domanda del cliente"
           }, {
             "type": "richtext",
             "id": "answer",
-            "label": "Risposta",
+            "label": "Answer",
             "default": "<p>Usa questo campo per rispondere in modo chiaro e sintetico.</p>"
           }
         ]
