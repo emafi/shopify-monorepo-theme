@@ -20,50 +20,56 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      # --- SYNC & PREPARE: Rica Haircare ---
-      - name: Sync Haircare Content
+      # --- SYNC PHASE: Pull from Deploy branches to Main ---
+      
+      - name: Sync Haircare Data from Shopify
         run: |
-          # 1. Get templates and settings from the deploy branch (Shopify changes)
-          mkdir -p temp_haircare
-          git archive origin/deploy-haircare templates config/settings_data.json | tar -x -C temp_haircare || echo "No remote files found"
-
-          # 2. Update the dist folder with these files
+          # Fetch the latest state of the deploy branch
+          git fetch origin deploy-haircare
+          
+          # Create temporary directories
+          mkdir -p temp_haircare_sync
+          
+          # Extract templates and settings from the deploy branch (which is flat)
+          # We use || true to prevent the action from failing if files don't exist yet
+          git show origin/deploy-haircare:templates > temp_haircare_templates.tar 2>/dev/null || true
+          
+          # More reliable method: checkout files to a temp location
+          git checkout origin/deploy-haircare -- templates/ config/settings_data.json || echo "Specific files not found in deploy-haircare"
+          
+          # Copy these files into the dist folder (overwriting)
           mkdir -p dist/rica-haircare/templates
           mkdir -p dist/rica-haircare/config
-          cp -rf temp_haircare/templates/. dist/rica-haircare/templates/ || echo "No templates to copy"
-          cp -f temp_haircare/config/settings_data.json dist/rica-haircare/config/settings_data.json || echo "No settings to copy"
+          cp -rf templates/. dist/rica-haircare/templates/ || echo "No templates to copy"
+          cp -f config/settings_data.json dist/rica-haircare/config/settings_data.json || echo "No settings to copy"
+          
+          # Clean up root from the checkout
+          rm -rf templates/ config/settings_data.json
 
-          # 3. CRITICAL: If you modified files in the ROOT of main, 
-          # you might want to sync them INTO the dist folder here if they are shared.
-          # Example: cp -rf sections/. dist/rica-haircare/sections/ (if applicable)
-
-          rm -rf temp_haircare
-
-      # --- SYNC & PREPARE: Rica Wax ---
-      - name: Sync Wax Content
+      - name: Sync Wax Data from Shopify
         run: |
-          mkdir -p temp_wax
-          git archive origin/deploy-wax templates config/settings_data.json | tar -x -C temp_wax || echo "No remote files found"
-
+          git fetch origin deploy-wax
+          git checkout origin/deploy-wax -- templates/ config/settings_data.json || echo "Specific files not found in deploy-wax"
+          
           mkdir -p dist/rica-wax/templates
           mkdir -p dist/rica-wax/config
-          cp -rf temp_wax/templates/. dist/rica-wax/templates/ || echo "No templates to copy"
-          cp -f temp_wax/config/settings_data.json dist/rica-wax/config/settings_data.json || echo "No settings to copy"
+          cp -rf templates/. dist/rica-wax/templates/ || echo "No templates to copy"
+          cp -f config/settings_data.json dist/rica-wax/config/settings_data.json || echo "No settings to copy"
+          
+          rm -rf templates/ config/settings_data.json
 
-          rm -rf temp_wax
-
-      # --- COMMIT AND REFRESH MAIN ---
-      - name: Commit and Push to Main
+      # --- COMMIT UPDATES TO MAIN ---
+      - name: Commit sync changes
         run: |
           git add dist/
-          # This captures both the Shopify changes and your local changes to dist
-          git commit -m "chore: sync theme distributions [skip ci]" || echo "No changes to commit"
+          git commit -m "chore: sync themes data from deploy branches [skip ci]" || echo "No changes to commit"
           git push origin main
 
-      # --- DEPLOYMENT PHASE ---
+      # --- DEPLOY PHASE: Re-deploy everything to Shopify branches ---
+      
       - name: Deploy Rica Haircare
         run: |
-          # The subtree split will now include EVERYTHING currently in dist/rica-haircare
+          # We use subtree split on the freshly updated dist folder
           git subtree split --prefix dist/rica-haircare -b temp-haircare
           git push -f origin temp-haircare:deploy-haircare
           git branch -D temp-haircare
