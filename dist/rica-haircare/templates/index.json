@@ -15,21 +15,21 @@
         "template--18309637636369__6a3bb789-ce10-45f5-ae67-e2063ef8c76b-168016437761699a6e-0": {
           "type": "heading",
           "settings": {
-            "heading": "Care for every strand.",
+            "heading": "Wax that keeps up.",
             "heading_size": "h1"
           }
         },
         "template--18309637636369__6a3bb789-ce10-45f5-ae67-e2063ef8c76b-168016437761699a6e-1": {
           "type": "text",
           "settings": {
-            "text": "Natural formulas, thoughtful ingredients, and salon-grade results.",
+            "text": "Natural ingredients, perfect for every skin type.",
             "text_style": "body"
           }
         },
         "template--18309637636369__6a3bb789-ce10-45f5-ae67-e2063ef8c76b-168016437761699a6e-2": {
           "type": "buttons",
           "settings": {
-            "button_label_1": "Shop all products",
+            "button_label_1": "Shop wax lineup",
             "button_link_1": "shopify://collections/all",
             "button_style_secondary_1": false,
             "button_label_2": "",
@@ -45,15 +45,14 @@
       ],
       "custom_css": [],
       "settings": {
-        "image": "shopify://shop_images/Screenshot_2026-02-20_at_15-56-04_hair_models_-_Cerca_con_Google.png",
-        "image_2": "shopify://shop_images/Screenshot_2026-02-20_at_15-47-52_hair_model_-_Cerca_con_Google.png",
-        "image_overlay_opacity": 0,
+        "image": "shopify://shop_images/Screenshot_2026-02-20_at_15-49-28_leg_wax_model_-_Cerca_con_Google.png",
+        "image_overlay_opacity": 20,
         "image_height": "medium",
-        "desktop_content_position": "middle-center",
+        "desktop_content_position": "middle-left",
         "show_text_box": true,
         "desktop_content_alignment": "left",
-        "color_scheme": "accent-2",
-        "image_behavior": "ambient",
+        "color_scheme": "background-1",
+        "image_behavior": "none",
         "mobile_content_alignment": "center",
         "stack_images_on_mobile": true,
         "show_text_below": true
@@ -65,14 +64,14 @@
         "brand_story_heading": {
           "type": "heading",
           "settings": {
-            "heading": "A ritual, not a routine.",
+            "heading": "Wax made for real snow days.",
             "heading_size": "h2"
           }
         },
         "brand_story_text": {
           "type": "text",
           "settings": {
-            "text": "<p>Use this space to share the story behind your formulas, philosophy, and results. Highlight what makes your haircare different—from ingredients to sustainability to salon partnerships.</p>"
+            "text": "<p>Use this content to explain your wax philosophy: performance, environmental responsibility, and how your lineup makes it easy to choose the right wax for the day.</p>"
           }
         }
       },
@@ -92,7 +91,7 @@
     "featured_collection": {
       "type": "featured-collection",
       "settings": {
-        "title": "<strong>Featured haircare staples</strong>",
+        "title": "<strong>Featured wax kits</strong>",
         "heading_size": "h2",
         "description": "",
         "show_description": false,
@@ -119,41 +118,41 @@
     "routine_multirow": {
       "type": "multirow",
       "blocks": {
-        "routine_cleanse": {
+        "routine_prep": {
           "type": "row",
           "settings": {
             "caption": "Step 1",
-            "heading": "Cleanse",
-            "text": "<p>Introduce your signature shampoos and cleansers here. Explain when to use them and which hair types they are best for.</p>",
-            "button_label": "Shop cleansers",
+            "heading": "Prep & clean",
+            "text": "<p>Explain how to clean bases and get skis or boards ready. Link to your cleaners, brushes, and tools.</p>",
+            "button_label": "Shop prep tools",
             "button_link": "shopify://collections/all"
           }
         },
-        "routine_treat": {
+        "routine_wax": {
           "type": "row",
           "settings": {
             "caption": "Step 2",
-            "heading": "Treat",
-            "text": "<p>Spotlight masks, serums, and treatments. Help customers choose products based on their goals like repair, volume, or shine.</p>",
-            "button_label": "Shop treatments",
+            "heading": "Wax for the day",
+            "text": "<p>Highlight temperature-specific or all-conditions waxes. Help customers pick the right product quickly.</p>",
+            "button_label": "Find your wax",
             "button_link": "shopify://collections/all"
           }
         },
-        "routine_protect": {
+        "routine_finish": {
           "type": "row",
           "settings": {
             "caption": "Step 3",
-            "heading": "Protect & finish",
-            "text": "<p>Feature leave-ins, oils, and styling products. Share tips for protecting hair from heat, sun, and everyday stress.</p>",
-            "button_label": "Shop finishers",
+            "heading": "Finish & store",
+            "text": "<p>Share best practices to brush, polish, and store gear so the base stays fast all season.</p>",
+            "button_label": "Browse finishing tools",
             "button_link": "shopify://collections/all"
           }
         }
       },
       "block_order": [
-        "routine_cleanse",
-        "routine_treat",
-        "routine_protect"
+        "routine_prep",
+        "routine_wax",
+        "routine_finish"
       ],
       "settings": {
         "image_height": "medium",
@@ -209,7 +208,7 @@
         "template--18309637636369__38cdf60f-e431-43b5-aac3-7e6215447d67-1680164898782d94ce-1"
       ],
       "settings": {
-        "title": "<strong>Shop by collection</strong>",
+        "title": "<strong>Shop by category</strong>",
         "heading_size": "h2",
         "image_ratio": "portrait",
         "columns_desktop": 3,
@@ -224,8 +223,8 @@
     "custom_visual_block": {
       "type": "custom-block",
       "settings": {
-        "title": "Showcase your hero formulas",
-        "background_color": "#fdf6f8"
+        "title": "Highlight your favorite wax setups",
+        "background_color": "#f3f7ff"
       }
     }
   },

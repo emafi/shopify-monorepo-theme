@@ -23,30 +23,23 @@ function copyDirectory(src, dest) {
   }
 }
 
-storesToBuild.forEach(store => {
+storesToBuild.forEach((store) => {
   console.log(`📦 Building theme for ${store}...`);
   const distDir = path.join(__dirname, 'dist', store);
   const themeDir = path.join(__dirname, 'theme');
-  const storeDir = path.join(__dirname, 'stores', store);
-  
-  if (!fs.existsSync(storeDir)) {
-    console.error(`❌ Error: stores/${store}/ does not exist!`);
-    return;
-  }
-  
+
   if (fs.existsSync(distDir)) {
     fs.rmSync(distDir, { recursive: true, force: true });
   }
   fs.mkdirSync(distDir, { recursive: true });
-  
+
   if (fs.existsSync(themeDir)) {
     copyDirectory(themeDir, distDir);
     console.log(`   ✅ Copied shared theme files`);
   } else {
     console.error(`   ⚠️  Warning: theme/ directory not found`);
   }
-  
-  const storeTemplatesDir = path.join(storeDir, 'templates');
+
   const distTemplatesDir = path.join(distDir, 'templates');
   if (fs.existsSync(storeTemplatesDir)) {
     if (!fs.existsSync(distTemplatesDir)) {
@@ -55,17 +48,17 @@ storesToBuild.forEach(store => {
     copyDirectory(storeTemplatesDir, distTemplatesDir);
     console.log(`   ✅ Copied store-specific templates`);
   }
-  
-  const storeSettingsData = path.join(storeDir, 'config', 'settings_data.json');
+
   const distConfigDir = path.join(distDir, 'config');
-  if (fs.existsSync(storeSettingsData)) {
-    if (!fs.existsSync(distConfigDir)) {
-      fs.mkdirSync(distConfigDir, { recursive: true });
-    }
-    fs.copyFileSync(storeSettingsData, path.join(distConfigDir, 'settings_data.json'));
-    console.log(`   ✅ Copied store-specific settings_data.json`);
+  if (!fs.existsSync(distConfigDir)) {
+    fs.mkdirSync(distConfigDir, { recursive: true });
   }
-  
+  fs.copyFileSync(
+    path.join(__dirname, 'config', 'settings_data.json'),
+    path.join(distConfigDir, 'settings_data.json'),
+  );
+  console.log(`   ✅ Copied store-specific settings_data.json`);
+
   console.log(`   ✨ ${store} theme built successfully!\n`);
 });
 
