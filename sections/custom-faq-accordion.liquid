@@ -167,18 +167,18 @@
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [{%- assign first = true -%}{%- for block in section.blocks -%}{%- if block.type == 'faq' and block.settings.question != blank and block.settings.answer != blank -%}{%- unless first -%},{%- endunless -%}
-        {
-          "@type": "Question",
-          "name": {{ block.settings.question | strip_html | strip_newlines | json }},
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": {{ block.settings.answer | strip_html | strip_newlines | json }}
-          }
+      {
+        "@type": "Question",
+        "name": {{ block.settings.question | strip_html | strip_newlines | json }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ block.settings.answer | strip_html | strip_newlines | json }}
         }
-        {%- assign first = false -%}
-        {%- endif -%}
-        {%- endfor -%}]
-    }
+      }
+      {%- assign first = false -%}
+      {%- endif -%}
+      {%- endfor -%}]
+  }
   </script>
 </section>
 
@@ -268,7 +268,7 @@
             "type": "text",
             "id": "question",
             "label": "Question",
-            "default": "Insert your question here"
+            "default": "Insert your question here please."
           }, {
             "type": "richtext",
             "id": "answer",
