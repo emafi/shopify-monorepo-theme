@@ -1,0 +1,6 @@
+templates/
+env/
+dist/rica-haircare/templates/
+dist/rica-haircare/config/settings_data.json
+dist/rica-wax/templates/
+dist/rica-wax/config/settings_data.json
