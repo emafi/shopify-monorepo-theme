@@ -519,7 +519,7 @@
       <table class="compare-table">
         <tr>
           <td class="row-label">Product</td>
-          ${selectedProducts.map(p => p.image ? `<td><img src="${p.image}"><br>` : `<strong>${p.title}</strong></td>`).join('')}
+          ${selectedProducts.map(p => p.image ? `<td><img src="${p.image}"><br><strong>${p.title}</strong></td>` : `<td><strong>${p.title}</strong></td>`).join('')}
         </tr>
         <tr>
           <td class="row-label">Price</td>
