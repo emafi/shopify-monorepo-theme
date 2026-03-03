@@ -214,19 +214,6 @@
   box-shadow: var(--beauty-shadow-soft);
 }
 
-.button--secondary {
-  background: transparent;
-  border: 2px solid rgba(var(--color-button), 0.3);
-  color: rgb(var(--color-button));
-  box-shadow: none;
-}
-
-.button--secondary:hover {
-  background: rgba(var(--color-button), 0.05);
-  border-color: rgba(var(--color-button), 0.5);
-  box-shadow: var(--beauty-shadow-soft);
-}
-
 .button--tertiary {
   background: transparent;
   border: none;
