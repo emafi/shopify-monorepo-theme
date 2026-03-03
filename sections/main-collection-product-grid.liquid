@@ -150,6 +150,11 @@
                   {%- assign lazy_load = true -%}
                 {%- endif -%}
                 <li class="grid__item">
+                  <button aria-variant="{{product.selected_or_first_available_variant | json | escape }}" 
+                  aria-product='{{ product | json | escape }}'
+                  class="compare-product-button button button--primary" 
+                  style="margin-bottom: 20px;
+                  position: relative; z-index: 10;">COMPARE PRODUCT</button>
                   {% render 'card-product',
                     card_product: product,
                     media_aspect_ratio: section.settings.image_ratio,
@@ -172,6 +177,109 @@
       </div>
     </div>
   {%- endpaginate -%}
+
+<div id="product-comparator" class="comparator-bar">
+  <div class="comparator-content page-width">
+    <div id="comparator-items" class="comparator-items"></div>
+    <div id="comparator-actions">
+      <button id="compare-now" class="button button--primary" disabled>Compare</button>
+      <button id="clear-compare" class="button button--primary">Clear All</button>
+    </div>
+  </div>
+</div>
+
+<div id="compare-modal" class="modal-overlay">
+  <div class="modal-content">
+    <button class="modal-close">&times;</button>
+    <h2 class="center">Product Comparison</h2>
+    <div id="modal-table-container">
+      </div>
+  </div>
+</div>
+
+<style>
+  /* Bar Styles - Only Name and Picture */
+  .comparator-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    padding: 15px 0;
+    z-index: 1000;
+    display: none;
+  }
+  .comparator-content { display: flex; align-items: center; justify-content: space-between; }
+  .comparator-items { display: flex; gap: 20px; }
+  
+  .comparator-item { 
+    position: relative; 
+    width: 80px; 
+    text-align: center; 
+    font-size: 10px; 
+  }
+  .comparator-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; display: block; margin: 0 auto 5px; }
+
+  .remove-item-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-size: 30px;
+    background: none; border: none; cursor: pointer;
+  }
+
+  /* Comparison Table */
+  .compare-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  .compare-table th, .compare-table td { 
+    padding: 15px; 
+    border: 1px solid #eee; 
+    text-align: center; 
+    width: 25%;
+  }
+  .compare-table th { background: #f8f8f8; font-weight: bold; }
+  .compare-table img { width: 120px; height: auto; }
+  .row-label { background: #fdfdfd; text-align: left !important; font-weight: bold; width: 15% !important; }
+</style>
+
 </div>
 
 {% schema %}
@@ -331,3 +439,113 @@
   ]
 }
 {% endschema %}
+
+<script>
+  const comparatorBar = document.getElementById('product-comparator');
+  const itemsContainer = document.getElementById('comparator-items');
+  const compareBtn = document.getElementById('compare-now');
+  const modal = document.getElementById('compare-modal');
+  const modalContainer = document.getElementById('modal-table-container');
+  
+  let selectedProducts = [];
+
+  function updateGridButtons() {
+    const selectedIds = selectedProducts.map(p => p.id);
+    document.querySelectorAll('.compare-product-button').forEach(button => {
+      const productData = JSON.parse(button.getAttribute('aria-product'));
+      button.style.visibility = selectedIds.includes(productData.id) ? 'hidden' : 'visible';
+    });
+  }
+
+  document.querySelectorAll('.compare-product-button').forEach(button => {
+    button.addEventListener('click', () => {
+      if (selectedProducts.length >= 3) {
+        alert('You can only compare up to 3 products.');
+        return;
+      }
+
+      const product = JSON.parse(button.getAttribute('aria-product'));
+      const variant = JSON.parse(button.getAttribute('aria-variant'));
+      
+      // Store relevant data including image
+      const productObj = {
+        id: product.id,
+        title: product.title,
+        type: product.type,
+        price: (product.price / 100).toFixed(2) + '€',
+        size: variant ? variant.option1 : 'N/A',
+        image: product.featured_image // Shopify provides this in the JSON
+      };
+
+      if (selectedProducts.length > 0 && selectedProducts[0].type !== productObj.type) {
+        alert('You can only compare products of the same type.');
+        return;
+      }
+
+      selectedProducts.push(productObj);
+      updateComparatorUI();
+    });
+  });
+
+  window.removeItem = function(productId) {
+    selectedProducts = selectedProducts.filter(p => p.id !== productId);
+    updateComparatorUI();
+  };
+
+  function updateComparatorUI() {
+    comparatorBar.style.display = selectedProducts.length > 0 ? 'block' : 'none';
+    
+    // UI 1: Bottom Bar (Only Image and Name)
+    itemsContainer.innerHTML = selectedProducts.map(p => p.image ? `
+      <div class="comparator-item">
+        <button onclick="removeItem(${p.id})" class="remove-item-btn">×</button>
+        <img src="${p.image}" alt="${p.title}">
+        <strong>${p.title}</strong>
+      </div>
+    ` : `
+      <div class="comparator-item">
+        <button onclick="removeItem(${p.id})" class="remove-item-btn">×</button>
+        <strong>${p.title}</strong>
+      </div>
+    `).join('');
+
+    compareBtn.disabled = selectedProducts.length < 2;
+    updateGridButtons();
+  }
+
+  // Generate and Show Modal Table
+  compareBtn.addEventListener('click', () => {
+    let tableHtml = `
+      <table class="compare-table">
+        <tr>
+          <td class="row-label">Product</td>
+          ${selectedProducts.map(p => p.image ? `<td><img src="${p.image}"><br><strong>${p.title}</strong></td>` : null).join('')}
+        </tr>
+        <tr>
+          <td class="row-label">Price</td>
+          ${selectedProducts.map(p => `<td>${p.price}</td>`).join('')}
+        </tr>
+        <tr>
+          <td class="row-label">Size</td>
+          ${selectedProducts.map(p => `<td>${p.size}</td>`).join('')}
+        </tr>
+      </table>
+    `;
+    modalContainer.innerHTML = tableHtml;
+    modal.style.display = 'flex';
+  });
+
+  // Close Modal
+  document.querySelector('.modal-close').addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  window.onclick = (event) => {
+    if (event.target == modal) modal.style.display = 'none';
+  };
+
+  document.getElementById('clear-compare').addEventListener('click', () => {
+    selectedProducts = [];
+    updateComparatorUI();
+  });
+</script>

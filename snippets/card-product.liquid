@@ -18,9 +18,13 @@
   {% render 'card-product', show_vendor: section.settings.show_vendor %}
 {% endcomment %}
 
+
 {{ 'component-rating.css' | asset_url | stylesheet_tag }}
 
 {%- if card_product and card_product != empty -%}
+  <script>
+  console.log('card_product', {{ card_product | json }});
+  </script>
   {%- liquid
     assign ratio = 1
     if card_product.featured_media and media_aspect_ratio == 'portrait'
